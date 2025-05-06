@@ -20,6 +20,7 @@ public Plugin myinfo =
 };
 
 // GraveStones:
+#define DEATH_PHRASE_COUNT     5
 // maximum length of death quote string
 #define MAX_EPITAPH_LENGTH 	   96
 // distance to raise annotations for epitaphs
@@ -277,6 +278,8 @@ KeyValues Config_LoadFile(const char[] sConfigFile)
 
 public void OnPluginStart()
 {
+  LoadTranslations("BuildAStyle.phrases");
+
   Config_Init();
   Command_Init();
   
@@ -1219,6 +1222,13 @@ public Action Timer_ReparentHat(Handle hTimer, int iData)
 /// TF2 Stocks
 //////////////////////////////////////////////////////////////////////////////////////////
 
+void FormatTranslationToBuffer(char[] buffer, int maxlen, const char[] phraseKey, any ...)
+{
+    SetGlobalTransTarget(LANG_SERVER); // or LANG_PLAYER if targeting a specific client
+    VFormat(buffer, maxlen, phraseKey, 3); // 3 skips the first 3 args: this function, buffer, maxlen
+}
+
+
 
 void SpawnGrave(int iClient)
 {
@@ -1267,9 +1277,17 @@ void SpawnGrave(int iClient)
           default:              iIndex = GetRandomInt(0, MODEL_RANDOM);
         }
 
-        // TODO: Read Config and get Custom Message.
+        char sClientName[64];
+        GetClientName(iClient, sClientName, sizeof(sClientName));
 
-        char sClientName[64]; GetClientName(iClient, sClientName, sizeof(sClientName));
+        int iRandom = GetRandomInt(1, DEATH_PHRASE_COUNT);
+        char sPhraseKey[32];
+        Format(sPhraseKey, sizeof(sPhraseKey), "death_phrase_%d", iRandom);
+
+        char sFormatted[256];
+        SetGlobalTransTarget(iClient);
+        Format(sFormatted, sizeof(sFormatted), "%t", sPhraseKey, sClientName);
+
         if (g_Gravestone.flAlert)
         {
           int iBitString = BuildBitString(flEndOrigin);
@@ -1283,7 +1301,7 @@ void SpawnGrave(int iClient)
               SetEventFloat(hEvent, "worldPosZ", flEndOrigin[2] + flNormal[2] * ANNOTATION_NAME_HEIGHT);
               SetEventFloat(hEvent, "lifetime", g_Gravestone.flAlert);
               SetEventInt(hEvent, "id", iEnt);
-              SetEventString(hEvent, "text", sClientName);
+              SetEventString(hEvent, "text", sFormatted);
               SetEventInt(hEvent, "visibilityBitfield", iBitString);
               SetEventString(hEvent, "play_sound", g_sSmallestViolin[GetRandomInt(0, sizeof(g_sSmallestViolin) - 1)]);
               FireEvent(hEvent);
