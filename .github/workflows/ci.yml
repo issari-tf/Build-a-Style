@@ -39,7 +39,7 @@ jobs:
           tar -xzf $(cat sourcemod-latest-linux)
 
       - name: Compile Plugins
-        run: bash $GITHUB_WORKSPACE/build.sh addons/sourcemod/scripting/spcomp 'addons/sourcemod/scripting/BuildAStyle.sp' -i='addons/sourcemod/scripting/include' -i='addons/sourcemod/scripting/'
+        run: bash $GITHUB_WORKSPACE/scripts/build.sh addons/sourcemod/scripting/spcomp 'addons/sourcemod/scripting/BuildAStyle.sp' -i='addons/sourcemod/scripting/include' -i='addons/sourcemod/scripting/'
 
       # - name: 'Upload Compilation Artifact'
       #   uses: actions/upload-artifact@v2
@@ -68,7 +68,7 @@ jobs:
       - name: Upload source code
         uses: actions/upload-artifact@v2
         with:
-          name: VSH Source
+          name: Source
           if-no-files-found: error
           path: |
             Source code.zip
