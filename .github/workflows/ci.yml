@@ -38,12 +38,8 @@ jobs:
           wget --input-file=http://sourcemod.net/smdrop/${{ matrix.sm_version }}/sourcemod-latest-linux
           tar -xzf $(cat sourcemod-latest-linux)
 
-      - name: Fetch plugin dependencies
-        run: |
-          wget https://raw.githubusercontent.com/asherkin/TF2Items/master/pawn/tf2items.inc -P addons/sourcemod/scripting/include
-
       - name: Compile Plugins
-        run: bash $GITHUB_WORKSPACE/build.sh addons/sourcemod/scripting/spcomp 'addons/sourcemod/scripting/vsh2.sp' 'addons/sourcemod/scripting/freak_fortress_2.sp' 'addons/sourcemod/scripting/freak_fortress_2_old.sp' 'addons/sourcemod/scripting/saxtonhale.sp' -i='addons/sourcemod/scripting/include' -i='addons/sourcemod/scripting/'
+        run: bash $GITHUB_WORKSPACE/build.sh addons/sourcemod/scripting/spcomp 'addons/sourcemod/scripting/BuildAStyle.sp' -i='addons/sourcemod/scripting/include' -i='addons/sourcemod/scripting/'
 
       # - name: 'Upload Compilation Artifact'
       #   uses: actions/upload-artifact@v2
