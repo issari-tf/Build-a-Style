@@ -370,8 +370,8 @@ stock bool Colorize(int iClient, char[] buffer, RenderMode mode)
   if (!gColorMap.GetArray(buffer, iColor, 3))
     return false;
   
-  ColorizeWearables(iClient, iColor, mode, "tf_wearable", "CTFWearable");
-  ColorizeWearables(iClient, iColor, mode, "tf_wearable_demoshield", "CTFWearableDemoShield");
+  ColorizeWearables(iClient, iColor, mode, "tf_wearable"/*, "CTFWearable"*/);
+  ColorizeWearables(iClient, iColor, mode, "tf_wearable_demoshield"/*, "CTFWearableDemoShield"*/);
 
   SetEntityRenderMode(iClient, mode);
   SetEntityRenderColor(iClient, iColor[0], iColor[1], iColor[2]);
@@ -379,7 +379,7 @@ stock bool Colorize(int iClient, char[] buffer, RenderMode mode)
 }
 
 stock void ColorizeWearables(int iClient, int iColor[3], RenderMode mode,
-  char[] EntClass, char[] /*ServerClass*/)
+  char[] EntClass/*, char[] ServerClass*/)
 {
   int iEnt = -1;
   while ((iEnt = FindEntityByClassname(iEnt, EntClass)) != -1)
