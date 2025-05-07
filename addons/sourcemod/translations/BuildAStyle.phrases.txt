@@ -1,0 +1,23 @@
+"Phrases"
+{
+    "death_phrase_1"
+    {
+        "en"        "Somewhere, a Medic sighed. %s died again."
+    }
+    "death_phrase_2"
+    {
+        "en"        "TF2 tip: Don’t do what %s just did."
+    }
+    "death_phrase_3"
+    {
+        "en"        "%s thought they were the main character. They were not."
+    }
+    "death_phrase_4"
+    {
+        "en"        "%s tried their best. It wasn’t enough."
+    }
+    "death_phrase_5"
+    {
+        "en"        "%s walked into death like it was a job interview."
+    }
+}
