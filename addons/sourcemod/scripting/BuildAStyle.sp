@@ -47,32 +47,32 @@ public Plugin myinfo =
 
 // model path + scale of prop
 static const char g_sGravestoneMDL[][][] = {
-	{"models/props_manor/gravestone_01.mdl", "0.5"},
-	{"models/props_manor/gravestone_02.mdl", "0.5"},
-	{"models/props_manor/gravestone_04.mdl", "0.5"},
+  {"models/props_manor/gravestone_01.mdl", "0.5"},
+  {"models/props_manor/gravestone_02.mdl", "0.5"},
+  {"models/props_manor/gravestone_04.mdl", "0.5"},
 
-	{"models/props_manor/gravestone_03.mdl", "0.4"},
-	{"models/props_manor/gravestone_05.mdl", "0.4"},
+  {"models/props_manor/gravestone_03.mdl", "0.4"},
+  {"models/props_manor/gravestone_05.mdl", "0.4"},
 
-	{"models/props_manor/gravestone_06.mdl", "0.3"},
-	{"models/props_manor/gravestone_07.mdl", "0.3"},
-	{"models/props_manor/gravestone_08.mdl", "0.3"},
-	
-	{"models/props_gameplay/tombstone_crocostyle.mdl", "1.0"},
-	{"models/props_gameplay/tombstone_gasjockey.mdl", "1.0"},
-	{"models/props_gameplay/tombstone_specialdelivery.mdl", "1.0"},
-	{"models/props_gameplay/tombstone_tankbuster.mdl", "1.0"}
+  {"models/props_manor/gravestone_06.mdl", "0.3"},
+  {"models/props_manor/gravestone_07.mdl", "0.3"},
+  {"models/props_manor/gravestone_08.mdl", "0.3"},
+  
+  {"models/props_gameplay/tombstone_crocostyle.mdl", "1.0"},
+  {"models/props_gameplay/tombstone_gasjockey.mdl", "1.0"},
+  {"models/props_gameplay/tombstone_specialdelivery.mdl", "1.0"},
+  {"models/props_gameplay/tombstone_tankbuster.mdl", "1.0"}
 };
 
 // sound to play when spawning name annotation
 static const char g_sSmallestViolin[][] = {
-	"player/taunt_v01.wav",
-	"player/taunt_v02.wav",
-	"player/taunt_v05.wav",
-	"player/taunt_v06.wav",
-	"player/taunt_v07.wav",
-	"misc/taps_02.wav",
-	"misc/taps_03.wav"
+  "player/taunt_v01.wav",
+  "player/taunt_v02.wav",
+  "player/taunt_v05.wav",
+  "player/taunt_v06.wav",
+  "player/taunt_v07.wav",
+  "misc/taps_02.wav",
+  "misc/taps_03.wav"
 };
 
 enum struct GraveInfo 
@@ -103,7 +103,7 @@ Cookie g_hCookieBuildColor;    // Building Colors
 Cookie g_hCookieBuildParticle; // Building Particles
 
 Cookie g_hCookiePlayerColor;      // Player Color
-Cookie g_hCookiePlayerParticle;   // Player Unusual Particles to self
+//Cookie g_hCookiePlayerParticle;   // Player Unusual Particles to self
 Cookie g_hCookiePlayerGravestone; // Player Gravestone
 
 enum ParticleType
@@ -121,100 +121,100 @@ int g_PlayerParticles[MAXPLAYERS + 1][PARTICLE_MAX];
 
 methodmap ConfigHats < StringMap
 {
-	public ConfigHats()
-	{
-		return view_as<ConfigHats>(new StringMap());
-	}
+  public ConfigHats()
+  {
+    return view_as<ConfigHats>(new StringMap());
+  }
 
-	public void LoadSection(KeyValues kv)
-	{
-		if (!kv.GotoFirstSubKey(false))
-		{
-			LogError("[ConfigHats] No entries found in section.");
-			return;
-		}
+  public void LoadSection(KeyValues kv)
+  {
+    if (!kv.GotoFirstSubKey(false))
+    {
+      LogError("[ConfigHats] No entries found in section.");
+      return;
+    }
 
-		do
-		{
-			char model[PLATFORM_MAX_PATH];
-			if (!kv.GetString("modelpath", model, sizeof(model)))
-				continue; // Skip if modelpath is missing
+    do
+    {
+      char model[PLATFORM_MAX_PATH];
+      if (!kv.GetString("modelpath", model, sizeof(model)))
+        continue; // Skip if modelpath is missing
 
-			StringMap hatData = new StringMap();
+      StringMap hatData = new StringMap();
 
-			char buffer[PLATFORM_MAX_PATH];
-			if (kv.GetString("offset", buffer, sizeof(buffer)))
-				hatData.SetString("offset", buffer);
+      char buffer[PLATFORM_MAX_PATH];
+      if (kv.GetString("offset", buffer, sizeof(buffer)))
+        hatData.SetString("offset", buffer);
 
-			if (kv.GetString("modelscale", buffer, sizeof(buffer)))
-				hatData.SetString("modelscale", buffer);
+      if (kv.GetString("modelscale", buffer, sizeof(buffer)))
+        hatData.SetString("modelscale", buffer);
 
-			if (kv.GetString("animation", buffer, sizeof(buffer)))
-				hatData.SetString("animation", buffer);
+      if (kv.GetString("animation", buffer, sizeof(buffer)))
+        hatData.SetString("animation", buffer);
 
-			// Store hatData under model name
-			this.SetValue(model, hatData);
+      // Store hatData under model name
+      this.SetValue(model, hatData);
 
-		} while (kv.GotoNextKey(false));
+    } while (kv.GotoNextKey(false));
 
-		kv.GoBack();
-	}
+    kv.GoBack();
+  }
 
-	public bool GetHatByModel(const char[] hatModel, float &modelOffset, float &modelScale)
-	{
-		StringMap hatData;
-		if (!this.GetValue(hatModel, hatData) || hatData == null)
-			return false;
+  public bool GetHatByModel(const char[] hatModel, float &modelOffset, float &modelScale)
+  {
+    StringMap hatData;
+    if (!this.GetValue(hatModel, hatData) || hatData == null)
+      return false;
 
-		char strScale[16], strOffset[16];
+    char strScale[16], strOffset[16];
 
-		if (!hatData.GetString("modelscale", strScale, sizeof(strScale)))
-			strScale = "1.0";
-		if (!hatData.GetString("offset", strOffset, sizeof(strOffset)))
-			strOffset = "0.0";
+    if (!hatData.GetString("modelscale", strScale, sizeof(strScale)))
+      strScale = "1.0";
+    if (!hatData.GetString("offset", strOffset, sizeof(strOffset)))
+      strOffset = "0.0";
 
-		modelScale = StringToFloat(strScale);
-		modelOffset = StringToFloat(strOffset);
-		return true;
-	}
+    modelScale = StringToFloat(strScale);
+    modelOffset = StringToFloat(strOffset);
+    return true;
+  }
 
-	public void Unload()
-	{
-		this.Clear();
-	}
+  public void Unload()
+  {
+    this.Clear();
+  }
 
   public int GetNumHats()
-	{
-		return this.Size;
-	}
+  {
+    return this.Size;
+  }
 }
 
 // Building Particles Config
 methodmap ConfigParticles < StringMap
 {
-	public ConfigParticles()
-	{
-		return view_as<ConfigParticles>(new StringMap());
-	}
+  public ConfigParticles()
+  {
+    return view_as<ConfigParticles>(new StringMap());
+  }
 
-	public void LoadSection(KeyValues kv)
-	{
+  public void LoadSection(KeyValues kv)
+  {
     if (!kv.GotoFirstSubKey(false))
-		{
-			LogError("[ConfigHats] No entries found in section.");
-			return;
-		}
+    {
+      LogError("[ConfigHats] No entries found in section.");
+      return;
+    }
 
-		do
-		{
-			char sParticleName[128];
-			if (kv.GetString("name", sParticleName, sizeof(sParticleName)))
-				this.SetString(sParticleName, sParticleName);
-		} 
+    do
+    {
+      char sParticleName[128];
+      if (kv.GetString("name", sParticleName, sizeof(sParticleName)))
+        this.SetString(sParticleName, sParticleName);
+    } 
     while (kv.GotoNextKey(false));
 
-		kv.GoBack();
-	}
+    kv.GoBack();
+  }
 }
 
 ConfigHats g_ConfigHats;
@@ -222,7 +222,7 @@ ConfigParticles g_ConfigParticles;
 
 void Config_Init()
 {	
-	g_ConfigHats = new ConfigHats();
+  g_ConfigHats = new ConfigHats();
   g_ConfigParticles = new ConfigParticles();
 }
 
@@ -233,13 +233,13 @@ void Config_Refresh()
 
   // Load every hat
   KeyValues kv = Config_LoadFile(CONFIG_HATS);
-	if (kv == null) return;
+  if (kv == null) return;
   g_ConfigHats.LoadSection(kv);
   delete kv;
 
   // Load every particle
   kv = Config_LoadFile(CONFIG_PARTICLES);
-	if (kv == null) return;
+  if (kv == null) return;
   g_ConfigParticles.LoadSection(kv);
   delete kv;
 
@@ -249,26 +249,26 @@ void Config_Refresh()
 
 KeyValues Config_LoadFile(const char[] sConfigFile)
 {
-	char sConfigPath[PLATFORM_MAX_PATH];
-	
-	BuildPath(Path_SM, sConfigPath, sizeof(sConfigPath), sConfigFile);
-	if (!FileExists(sConfigPath))
-	{
-		LogMessage("Failed to load BuildAStyle config file (file missing): %s!", sConfigPath);
-		return null;
-	}
-	
-	KeyValues kv = new KeyValues("BuildAStyle");
-	kv.SetEscapeSequences(true);
+  char sConfigPath[PLATFORM_MAX_PATH];
+  
+  BuildPath(Path_SM, sConfigPath, sizeof(sConfigPath), sConfigFile);
+  if (!FileExists(sConfigPath))
+  {
+    LogMessage("Failed to load BuildAStyle config file (file missing): %s!", sConfigPath);
+    return null;
+  }
+  
+  KeyValues kv = new KeyValues("BuildAStyle");
+  kv.SetEscapeSequences(true);
 
-	if(!kv.ImportFromFile(sConfigPath))
-	{
-		LogMessage("Failed to parse vsh config file: %s!", sConfigPath);
-		delete kv;
-		return null;
-	}
-	
-	return kv;
+  if(!kv.ImportFromFile(sConfigPath))
+  {
+    LogMessage("Failed to parse vsh config file: %s!", sConfigPath);
+    delete kv;
+    return null;
+  }
+  
+  return kv;
 }
 
 
@@ -309,22 +309,22 @@ public void OnPluginStart()
 
 public void OnPluginEnd()
 {
-	RemoveAllGravestones();
+  RemoveAllGravestones();
 }
 
 void RemoveAllGravestones()
 {
-	int iEnt;
-	for (int i = 1; i <= MaxClients; i++)
-	{
-		iEnt = EntRefToEntIndex(g_Gravestone.iEntity[i]);
-		if (iEnt != INVALID_ENT_REFERENCE)
-		{
+  int iEnt;
+  for (int i = 1; i <= MaxClients; i++)
+  {
+    iEnt = EntRefToEntIndex(g_Gravestone.iEntity[i]);
+    if (iEnt != INVALID_ENT_REFERENCE)
+    {
       // if it is not resized, it will crash
-			SetEntPropFloat(iEnt, Prop_Send, "m_flModelScale", 1.0);
-			KillWithoutMayhem(iEnt);
-		}
-	}
+      SetEntPropFloat(iEnt, Prop_Send, "m_flModelScale", 1.0);
+      KillWithoutMayhem(iEnt);
+    }
+  }
 }
 
 public void OnMapStart()
@@ -333,18 +333,18 @@ public void OnMapStart()
 
   // Precache Models
   for (int i = 0; i < sizeof(g_sGravestoneMDL); i++)
-		PrecacheModel(g_sGravestoneMDL[i][0], true);
+    PrecacheModel(g_sGravestoneMDL[i][0], true);
 
   // Precache Sounds
-	for (int i = 1; i < sizeof(g_sSmallestViolin); i++)
-		PrecacheSound(g_sSmallestViolin[i]);
-	PrecacheSound(SOUND_NULL, true);
+  for (int i = 1; i < sizeof(g_sSmallestViolin); i++)
+    PrecacheSound(g_sSmallestViolin[i]);
+  PrecacheSound(SOUND_NULL, true);
 
   // Reset Gravestone Info
   for (int i = 1; i <= MaxClients; i++)
   {
     g_Gravestone.iEntity[i] = INVALID_ENT_REFERENCE; // better safe than sorry
-		g_Gravestone.iAnnotationEntity[i] = -1; // this will make the annotation dissapear
+    g_Gravestone.iAnnotationEntity[i] = -1; // this will make the annotation dissapear
   }
 
   g_Gravestone.hHUDtimer = CreateTimer(HUDUPDATERATE, Timer_UpdateHUD, INVALID_HANDLE, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -379,7 +379,7 @@ stock bool Colorize(int iClient, char[] buffer, RenderMode mode)
 }
 
 stock void ColorizeWearables(int iClient, int iColor[3], RenderMode mode,
-  char[] EntClass, char[] ServerClass)
+  char[] EntClass, char[] /*ServerClass*/)
 {
   int iEnt = -1;
   while ((iEnt = FindEntityByClassname(iEnt, EntClass)) != -1)
@@ -603,17 +603,17 @@ stock void StrToLower(char[] buffer)
 // style_spawn  | style_build
 
 static char g_strCommandPrefix[][] = {
-	"style",
-	"style_",
+  "style",
+  "style_",
 };
 
 public void Command_Init()
 {
-	// Commands for everyone
-	RegAdminCmd("style", Command_MainMenu, ADMFLAG_RESERVATION);
-	
+  // Commands for everyone
+  RegAdminCmd("style", Command_MainMenu, ADMFLAG_RESERVATION);
+  
   Command_Create("menu", Command_MainMenu);
-	
+  
   // Building Hats commands
   Command_Create("hats", Command_BuildingHats);
   Command_Create("hat", Command_BuildingHats);
@@ -639,19 +639,19 @@ public void Command_Init()
 
 stock void Command_Create(const char[] sCommand, ConCmd callback)
 {
-	for (int i = 0; i < sizeof(g_strCommandPrefix); i++)
-	{
-		char sBuffer[256];
-		Format(sBuffer, sizeof(sBuffer), "%s%s", g_strCommandPrefix[i], sCommand);
-		RegAdminCmd(sBuffer, callback, ADMFLAG_RESERVATION);
-	}
+  for (int i = 0; i < sizeof(g_strCommandPrefix); i++)
+  {
+    char sBuffer[256];
+    Format(sBuffer, sizeof(sBuffer), "%s%s", g_strCommandPrefix[i], sCommand);
+    RegAdminCmd(sBuffer, callback, ADMFLAG_RESERVATION);
+  }
 }
 
 public Action Command_Gravestone(int iClient, int iArgs)
 {
-	if (!IsClientInGame(iClient))
-		return Plugin_Handled;
-	
+  if (!IsClientInGame(iClient))
+    return Plugin_Handled;
+  
   char sCookieValue[8];
   GetClientCookie(iClient, g_hCookiePlayerGravestone, sCookieValue, sizeof(sCookieValue));
 
@@ -983,7 +983,7 @@ public Action Event_OnObjectBuilt(Event event, const char[] sName, bool bDontBro
 
   // Get Color Building
   char sColorCookieValue[16];
-	GetClientCookie(iClient, g_hCookieBuildColor, sColorCookieValue, sizeof(sColorCookieValue));
+  GetClientCookie(iClient, g_hCookieBuildColor, sColorCookieValue, sizeof(sColorCookieValue));
   if (sColorCookieValue[0] != '\0')
   {
     int packedColor = StringToInt(sColorCookieValue);
@@ -1222,14 +1222,6 @@ public Action Timer_ReparentHat(Handle hTimer, int iData)
 /// TF2 Stocks
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void FormatTranslationToBuffer(char[] buffer, int maxlen, const char[] phraseKey, any ...)
-{
-    SetGlobalTransTarget(LANG_SERVER); // or LANG_PLAYER if targeting a specific client
-    VFormat(buffer, maxlen, phraseKey, 3); // 3 skips the first 3 args: this function, buffer, maxlen
-}
-
-
-
 void SpawnGrave(int iClient)
 {
   float flStartOrigin[3];
@@ -1357,141 +1349,141 @@ void SpawnGrave(int iClient)
 
 public Action Timer_RemoveGravestone(Handle hTimer, int iRef)
 {
-	int iEnt = EntRefToEntIndex(iRef);
-	if (iEnt != INVALID_ENT_REFERENCE)
-	{
-		SetEntPropFloat(iEnt, Prop_Send, "m_flModelScale", 1.0);
-		KillWithoutMayhem(iEnt);
-	}
+  int iEnt = EntRefToEntIndex(iRef);
+  if (iEnt != INVALID_ENT_REFERENCE)
+  {
+    SetEntPropFloat(iEnt, Prop_Send, "m_flModelScale", 1.0);
+    KillWithoutMayhem(iEnt);
+  }
   return Plugin_Continue;
 }
 
 public int BuildBitString(float flPosition[3])
 {
-	int iBitString;
-	for (int i = 1; i <= MaxClients; i++)
-	{
-		if (IsClientInGame(i))
-		{
-			float flEyePos[3];
-			GetClientEyePosition(i, flEyePos);
-			if (GetVectorDistance(flPosition, flEyePos) < g_Gravestone.flDistance)
-				iBitString |= 1 << i;
-		}
-	}
-	return iBitString;
+  int iBitString;
+  for (int i = 1; i <= MaxClients; i++)
+  {
+    if (IsClientInGame(i))
+    {
+      float flEyePos[3];
+      GetClientEyePosition(i, flEyePos);
+      if (GetVectorDistance(flPosition, flEyePos) < g_Gravestone.flDistance)
+        iBitString |= 1 << i;
+    }
+  }
+  return iBitString;
 }
 
 public bool TraceRayProp(int iEntityHit, int iMask)
 {
   // Hit terrain, no models or debris
-	if (iEntityHit == 0)
-		return true;
+  if (iEntityHit == 0)
+    return true;
 
-	return false;
+  return false;
 }
 
 stock int GetObject(int iClient)
 {
-	float flClientEyePos[3];
-	float flClientEyeAng[3];
+  float flClientEyePos[3];
+  float flClientEyeAng[3];
 
-	GetClientEyePosition(iClient, flClientEyePos);
-	GetClientEyeAngles(iClient, flClientEyeAng);
+  GetClientEyePosition(iClient, flClientEyePos);
+  GetClientEyeAngles(iClient, flClientEyeAng);
 
-	TR_TraceRayFilter(flClientEyePos, flClientEyeAng, MASK_PLAYERSOLID, 
+  TR_TraceRayFilter(flClientEyePos, flClientEyeAng, MASK_PLAYERSOLID, 
                     RayType_Infinite, DontHitSelf, iClient);
 
-	if (TR_DidHit(INVALID_HANDLE))
-	{
-		int iEnt = TR_GetEntityIndex(INVALID_HANDLE);
-		if (iEnt > 0)
-			for (int i = 1; i <= MaxClients; i++)
-				if (EntRefToEntIndex(g_Gravestone.iEntity[i]) == iEnt)
-					return iEnt;
-	}
+  if (TR_DidHit(INVALID_HANDLE))
+  {
+    int iEnt = TR_GetEntityIndex(INVALID_HANDLE);
+    if (iEnt > 0)
+      for (int i = 1; i <= MaxClients; i++)
+        if (EntRefToEntIndex(g_Gravestone.iEntity[i]) == iEnt)
+          return iEnt;
+  }
 
-	return -1;
+  return -1;
 }
 
 public bool DontHitSelf(int entity, int mask, int client)
 {
-	return (client != entity);
+  return (client != entity);
 }
 
 stock void KillWithoutMayhem(int iEntity)
 {
-	float flRandomVec[3];
-	flRandomVec[0] = GetRandomFloat(-5000.0,5000.0);
-	flRandomVec[1] = GetRandomFloat(-5000.0,5000.0);
-	flRandomVec[2] = -5000.0;
-	
-	TeleportEntity(iEntity, flRandomVec, NULL_VECTOR, NULL_VECTOR); 
-	SetEntProp(iEntity, Prop_Send, "m_CollisionGroup", 0);
-		
-	AcceptEntityInput(iEntity, "Kill");
+  float flRandomVec[3];
+  flRandomVec[0] = GetRandomFloat(-5000.0,5000.0);
+  flRandomVec[1] = GetRandomFloat(-5000.0,5000.0);
+  flRandomVec[2] = -5000.0;
+  
+  TeleportEntity(iEntity, flRandomVec, NULL_VECTOR, NULL_VECTOR); 
+  SetEntProp(iEntity, Prop_Send, "m_CollisionGroup", 0);
+    
+  AcceptEntityInput(iEntity, "Kill");
 }
 
 public Action Timer_UpdateHUD(Handle hTimer){
-	float flClientPos[3], flPropPos[3];
+  float flClientPos[3], flPropPos[3];
   for (int i = 1; i <= MaxClients; i++)
   {
     if (IsClientInGame(i) && !IsFakeClient(i))
-		{
+    {
       int iEnt = GetObject(i);
       if (iEnt != -1 && GetClientButtons(i) & IN_ATTACK2)
-			{
+      {
         GetEntPropVector(iEnt, Prop_Send, "m_vecOrigin", flPropPos);
-				GetEntPropVector(i, Prop_Send, "m_vecOrigin", flClientPos);
+        GetEntPropVector(i, Prop_Send, "m_vecOrigin", flClientPos);
 
         if (GetVectorDistance(flClientPos, flPropPos) < g_Gravestone.flDistance)
-				{
-					if (g_Gravestone.iAnnotationEntity[i] != iEnt)
-					{
+        {
+          if (g_Gravestone.iAnnotationEntity[i] != iEnt)
+          {
             Handle hEvent = CreateEvent("show_annotation");
-						if (hEvent != INVALID_HANDLE)
-						{
+            if (hEvent != INVALID_HANDLE)
+            {
               //GetEntPropString(ent, Prop_Data, "m_iName", sBuffer, 36);
-							//ExplodeString(sBuffer, ";", segment, 2, 32);					// name;index
-							//GetArrayString(g_hEpitaph, StringToInt(segment[1]), sBuffer, MAX_EPITAPH_LENGTH+32);
-							//ReplaceString(sBuffer, MAX_EPITAPH_LENGTH, "*", segment[0]);
+              //ExplodeString(sBuffer, ";", segment, 2, 32);					// name;index
+              //GetArrayString(g_hEpitaph, StringToInt(segment[1]), sBuffer, MAX_EPITAPH_LENGTH+32);
+              //ReplaceString(sBuffer, MAX_EPITAPH_LENGTH, "*", segment[0]);
 
-							float flPropAng[3], flUpVec[3];
-							GetEntPropVector(iEnt, Prop_Send, "m_angRotation", flPropAng);
-							GetAngleVectors(flPropAng, NULL_VECTOR, NULL_VECTOR, flUpVec);
+              float flPropAng[3], flUpVec[3];
+              GetEntPropVector(iEnt, Prop_Send, "m_angRotation", flPropAng);
+              GetAngleVectors(flPropAng, NULL_VECTOR, NULL_VECTOR, flUpVec);
 
-							SetEventFloat(hEvent, "worldPosX", flPropPos[0] + (flUpVec[0] * ANNOTATION_HEIGHT));
-							SetEventFloat(hEvent, "worldPosY", flPropPos[1] + (flUpVec[1] * ANNOTATION_HEIGHT));
-							SetEventFloat(hEvent, "worldPosZ", flPropPos[2] + (flUpVec[2] * ANNOTATION_HEIGHT));
-							SetEventFloat(hEvent, "lifetime", 999999.0); // arbitrarily long
-							SetEventInt(hEvent, "id", i);
-							SetEventString(hEvent, "text", "Rip");
-							SetEventInt(hEvent, "visibilityBitfield", 1 << i);
-							SetEventString(hEvent, "play_sound", SOUND_NULL);
-							FireEvent(hEvent);
-							g_Gravestone.iAnnotationEntity[i] = iEnt;
+              SetEventFloat(hEvent, "worldPosX", flPropPos[0] + (flUpVec[0] * ANNOTATION_HEIGHT));
+              SetEventFloat(hEvent, "worldPosY", flPropPos[1] + (flUpVec[1] * ANNOTATION_HEIGHT));
+              SetEventFloat(hEvent, "worldPosZ", flPropPos[2] + (flUpVec[2] * ANNOTATION_HEIGHT));
+              SetEventFloat(hEvent, "lifetime", 999999.0); // arbitrarily long
+              SetEventInt(hEvent, "id", i);
+              SetEventString(hEvent, "text", "Rip");
+              SetEventInt(hEvent, "visibilityBitfield", 1 << i);
+              SetEventString(hEvent, "play_sound", SOUND_NULL);
+              FireEvent(hEvent);
+              g_Gravestone.iAnnotationEntity[i] = iEnt;
             }
           }
         }
       }
       else if (g_Gravestone.iAnnotationEntity[i] != -1)
-			{
-				Handle hEvent = CreateEvent("show_annotation");
-				if (hEvent != INVALID_HANDLE)
-				{
-					SetEventFloat(hEvent, "lifetime", 0.00001); // arbitrarily short
-					SetEventInt(hEvent, "id", i);
-					SetEventString(hEvent, "text", " ");
-					SetEventInt(hEvent, "visibilityBitfield", 1 << i);
-					SetEventInt(hEvent, "follow_entindex", iEnt); // follow the client, they won't see it anyway
-					SetEventString(hEvent, "play_sound", SOUND_NULL);
-					FireEvent(hEvent);
-				}
-				g_Gravestone.iAnnotationEntity[i] = -1;
-			}
+      {
+        Handle hEvent = CreateEvent("show_annotation");
+        if (hEvent != INVALID_HANDLE)
+        {
+          SetEventFloat(hEvent, "lifetime", 0.00001); // arbitrarily short
+          SetEventInt(hEvent, "id", i);
+          SetEventString(hEvent, "text", " ");
+          SetEventInt(hEvent, "visibilityBitfield", 1 << i);
+          SetEventInt(hEvent, "follow_entindex", iEnt); // follow the client, they won't see it anyway
+          SetEventString(hEvent, "play_sound", SOUND_NULL);
+          FireEvent(hEvent);
+        }
+        g_Gravestone.iAnnotationEntity[i] = -1;
+      }
     }
   }
-	return Plugin_Continue;
+  return Plugin_Continue;
 }
 
 
@@ -1559,11 +1551,11 @@ stock int GetObjectHat(int objectEnt)
 }
 
 public Action RemoveEnt(Handle timer, any entid) {
-	int ent = EntRefToEntIndex(entid);
-	if( ent > 0 && IsValidEntity(ent) ) {
-		AcceptEntityInput(ent, "Kill");
-	}
-	return Plugin_Continue;
+  int ent = EntRefToEntIndex(entid);
+  if( ent > 0 && IsValidEntity(ent) ) {
+    AcceptEntityInput(ent, "Kill");
+  }
+  return Plugin_Continue;
 }
 
 stock int AttachParticle(const int ent, const char[] particleType, float offset = 0.0, bool battach = true) {
@@ -1709,174 +1701,173 @@ stock bool IsHattableObject(TFObjectType objectEnt)
 
 stock void Config_PrintAllHats()
 {
-	int count = g_ConfigHats.Size;
-	PrintToServer("[ConfigHats] Loaded Hat Count: %d", count);
+  int count = g_ConfigHats.Size;
+  PrintToServer("[ConfigHats] Loaded Hat Count: %d", count);
 
-	StringMapSnapshot snapshot = g_ConfigHats.Snapshot();
-	if (snapshot == null)
-	{
-		PrintToServer("[ConfigHats] Failed to get snapshot.");
-		return;
-	}
+  StringMapSnapshot snapshot = g_ConfigHats.Snapshot();
+  if (snapshot == null)
+  {
+    PrintToServer("[ConfigHats] Failed to get snapshot.");
+    return;
+  }
 
-	for (int i = 0; i < snapshot.Length; i++)
-	{
-		char model[PLATFORM_MAX_PATH];
-		snapshot.GetKey(i, model, sizeof(model));
+  for (int i = 0; i < snapshot.Length; i++)
+  {
+    char model[PLATFORM_MAX_PATH];
+    snapshot.GetKey(i, model, sizeof(model));
 
-		StringMap hatData;
-		if (!g_ConfigHats.GetValue(model, hatData) || hatData == null)
-		{
-			PrintToServer("  [%d] %s: NULL HatData", i, model);
-			continue;
-		}
+    StringMap hatData;
+    if (!g_ConfigHats.GetValue(model, hatData) || hatData == null)
+    {
+      PrintToServer("  [%d] %s: NULL HatData", i, model);
+      continue;
+    }
 
-		char offset[32], scale[32], anim[PLATFORM_MAX_PATH];
+    char offset[32], scale[32], anim[PLATFORM_MAX_PATH];
 
-		bool hasOffset = hatData.GetString("offset", offset, sizeof(offset));
-		bool hasScale = hatData.GetString("modelscale", scale, sizeof(scale));
-		bool hasAnim  = hatData.GetString("animation", anim, sizeof(anim));
+    bool hasOffset = hatData.GetString("offset", offset, sizeof(offset));
+    bool hasScale = hatData.GetString("modelscale", scale, sizeof(scale));
+    bool hasAnim  = hatData.GetString("animation", anim, sizeof(anim));
 
-		PrintToServer("  Hat [%d] Model: %s", i, model);
-		PrintToServer("    offset    : %s", hasOffset ? offset : "N/A");
-		PrintToServer("    modelscale: %s", hasScale ? scale : "N/A");
-		PrintToServer("    animation : %s", hasAnim  ? anim  : "N/A");
-	}
+    PrintToServer("  Hat [%d] Model: %s", i, model);
+    PrintToServer("    offset    : %s", hasOffset ? offset : "N/A");
+    PrintToServer("    modelscale: %s", hasScale ? scale : "N/A");
+    PrintToServer("    animation : %s", hasAnim  ? anim  : "N/A");
+  }
 
-	delete snapshot;
+  delete snapshot;
 }
 
 // Get Random Hat From Config by index into snapshot list
 stock void Config_GetHat(int iHatIndex, char sHatModel[PLATFORM_MAX_PATH], float &flModelScale, float &flModelOffset)
 {
-	StringMapSnapshot snapshot = g_ConfigHats.Snapshot();
-	if (snapshot == null || iHatIndex < 0 || iHatIndex >= snapshot.Length)
-	{
-		PrintToServer("[ConfigHats] Invalid hat index: %d", iHatIndex);
-		LogError("[ConfigHats] Invalid hat index: %d", iHatIndex);
-		sHatModel[0] = '\0';
-		flModelScale = 0.0;
-		flModelOffset = 0.0;
-		return;
-	}
+  StringMapSnapshot snapshot = g_ConfigHats.Snapshot();
+  if (snapshot == null || iHatIndex < 0 || iHatIndex >= snapshot.Length)
+  {
+    PrintToServer("[ConfigHats] Invalid hat index: %d", iHatIndex);
+    LogError("[ConfigHats] Invalid hat index: %d", iHatIndex);
+    sHatModel[0] = '\0';
+    flModelScale = 0.0;
+    flModelOffset = 0.0;
+    return;
+  }
 
-	char sModel[PLATFORM_MAX_PATH];
-	snapshot.GetKey(iHatIndex, sModel, sizeof(sModel));
+  char sModel[PLATFORM_MAX_PATH];
+  snapshot.GetKey(iHatIndex, sModel, sizeof(sModel));
 
-	StringMap hHatData;
-	if (!g_ConfigHats.GetValue(sModel, hHatData) || hHatData == null)
-	{
-		PrintToServer("[ConfigHats] Failed to retrieve data for hat model: %s", sModel);
-		sHatModel[0] = '\0';
-		flModelScale = 0.0;
-		flModelOffset = 0.0;
-		delete snapshot;
-		return;
-	}
+  StringMap hHatData;
+  if (!g_ConfigHats.GetValue(sModel, hHatData) || hHatData == null)
+  {
+    PrintToServer("[ConfigHats] Failed to retrieve data for hat model: %s", sModel);
+    sHatModel[0] = '\0';
+    flModelScale = 0.0;
+    flModelOffset = 0.0;
+    delete snapshot;
+    return;
+  }
 
-	char sScale[16], sOffset[16];
+  char sScale[16], sOffset[16];
 
-	if (!hHatData.GetString("modelscale", sScale, sizeof(sScale)))
-		strcopy(sScale, sizeof(sScale), "1.0");
+  if (!hHatData.GetString("modelscale", sScale, sizeof(sScale)))
+    strcopy(sScale, sizeof(sScale), "1.0");
 
-	if (!hHatData.GetString("offset", sOffset, sizeof(sOffset)))
-		strcopy(sOffset, sizeof(sOffset), "0.0");
+  if (!hHatData.GetString("offset", sOffset, sizeof(sOffset)))
+    strcopy(sOffset, sizeof(sOffset), "0.0");
 
-	strcopy(sHatModel, PLATFORM_MAX_PATH, sModel);
-	flModelScale = StringToFloat(sScale);
-	flModelOffset = StringToFloat(sOffset);
+  strcopy(sHatModel, PLATFORM_MAX_PATH, sModel);
+  flModelScale = StringToFloat(sScale);
+  flModelOffset = StringToFloat(sOffset);
 
-	delete snapshot;
+  delete snapshot;
 }
 
 stock void Config_PrecacheAllHats()
 {
-	//int count = g_ConfigHats.Size;
-	//PrintToServer("[ConfigHats] Precaching %d Hat(s)...", count);
+  //int count = g_ConfigHats.Size;
+  //PrintToServer("[ConfigHats] Precaching %d Hat(s)...", count);
 
-	StringMapSnapshot snapshot = g_ConfigHats.Snapshot();
-	if (snapshot == null)
-	{
-		LogError("[ConfigHats] Failed to create snapshot for precache.");
-		return;
-	}
+  StringMapSnapshot snapshot = g_ConfigHats.Snapshot();
+  if (snapshot == null)
+  {
+    LogError("[ConfigHats] Failed to create snapshot for precache.");
+    return;
+  }
 
-	for (int i = 0; i < snapshot.Length; i++)
-	{
-		char model[PLATFORM_MAX_PATH];
-		snapshot.GetKey(i, model, sizeof(model));
+  for (int i = 0; i < snapshot.Length; i++)
+  {
+    char model[PLATFORM_MAX_PATH];
+    snapshot.GetKey(i, model, sizeof(model));
 
-		StringMap hatData;
-		if (!g_ConfigHats.GetValue(model, hatData) || hatData == null)
-		{
-			LogError("  [%d] %s: NULL HatData", i, model);
-			continue;
-		}
+    StringMap hatData;
+    if (!g_ConfigHats.GetValue(model, hatData) || hatData == null)
+    {
+      LogError("  [%d] %s: NULL HatData", i, model);
+      continue;
+    }
 
-		// The model string is the actual path to the model to precache
-		if (model[0] != '\0')
-		{
-			PrecacheModel(model, true);
-			//PrintToServer("  [%d] Precaching Hat Model: %s", i, model);
-		}
-		else
-		{
-			LogError("  [%d] Empty model string for hat", i);
-		}
-	}
+    // The model string is the actual path to the model to precache
+    if (model[0] != '\0')
+    {
+      PrecacheModel(model, true);
+      //PrintToServer("  [%d] Precaching Hat Model: %s", i, model);
+    }
+    else
+    {
+      LogError("  [%d] Empty model string for hat", i);
+    }
+  }
 
-	delete snapshot;
+  delete snapshot;
 }
 
 stock void Config_PrecacheAllParticles()
 {
-	//int count = g_ConfigParticles.Size;
-	//PrintToServer("[ConfigParticles] Precaching %d Particle(s)...", count);
+  //int count = g_ConfigParticles.Size;
+  //PrintToServer("[ConfigParticles] Precaching %d Particle(s)...", count);
 
-	StringMapSnapshot snapshot = g_ConfigParticles.Snapshot();
-	if (snapshot == null)
-	{
-		LogError("[ConfigParticles] Failed to create snapshot for precaching.");
-		return;
-	}
+  StringMapSnapshot snapshot = g_ConfigParticles.Snapshot();
+  if (snapshot == null)
+  {
+    LogError("[ConfigParticles] Failed to create snapshot for precaching.");
+    return;
+  }
 
-	for (int i = 0; i < snapshot.Length; i++)
-	{
-		char particleName[128];
-		if (snapshot.GetKey(i, particleName, sizeof(particleName)))
-		{
-			// Assuming you have a function to precache particles
-			PrecacheModel(particleName);
+  for (int i = 0; i < snapshot.Length; i++)
+  {
+    char particleName[128];
+    if (snapshot.GetKey(i, particleName, sizeof(particleName)))
+    {
+      // Assuming you have a function to precache particles
+      PrecacheModel(particleName);
 
-			// Print out the precache info
-			//PrintToServer("  [%d] Precaching Particle: %s", i, particleName);
-		}
-	}
+      // Print out the precache info
+      //PrintToServer("  [%d] Precaching Particle: %s", i, particleName);
+    }
+  }
 
-	delete snapshot;
+  delete snapshot;
 }
-
 
 stock void Config_PrintAllParticles()
 {
-	int count = g_ConfigParticles.Size;
-	PrintToServer("[ConfigParticles] Loaded Particle Count: %d", count);
+  int count = g_ConfigParticles.Size;
+  PrintToServer("[ConfigParticles] Loaded Particle Count: %d", count);
 
-	StringMapSnapshot snapshot = g_ConfigParticles.Snapshot();
-	if (snapshot == null)
-	{
-		LogError("[ConfigParticles] Failed to create snapshot for printing.");
-		return;
-	}
+  StringMapSnapshot snapshot = g_ConfigParticles.Snapshot();
+  if (snapshot == null)
+  {
+    LogError("[ConfigParticles] Failed to create snapshot for printing.");
+    return;
+  }
 
-	for (int i = 0; i < snapshot.Length; i++)
-	{
-		char particleName[128];
-		if (snapshot.GetKey(i, particleName, sizeof(particleName)))
-		{
-			PrintToServer("  [%d] Particle Name: %s", i, particleName);
-		}
-	}
+  for (int i = 0; i < snapshot.Length; i++)
+  {
+    char particleName[128];
+    if (snapshot.GetKey(i, particleName, sizeof(particleName)))
+    {
+      PrintToServer("  [%d] Particle Name: %s", i, particleName);
+    }
+  }
 
-	delete snapshot;
+  delete snapshot;
 }
